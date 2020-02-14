@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:padding="8dp">
     <TextView
-        android:id="@+id/aNametxt"
-        android:text="Android Name"
+        android:id="@+id/repoNameTV"
+        android:text="Repo Name"
         android:textSize="20sp"
         android:layout_marginTop="8dp"
         android:maxLines="1"
@@ -18,8 +18,19 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp" />
     <TextView
-        android:id="@+id/aVersiontxt"
-        android:text="Android Version"
+        android:id="@+id/repoDesTV"
+        android:text="Repo Description"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/aNametxt"
+        android:layout_alignLeft="@+id/aNametxt"
+    android:layout_alignStart="@+id/aNametxt"
+    android:layout_marginLeft="12dp"/>
+    <TextView
+        android:id="@+id/starsTV"
+        android:text="starts"
         android:textSize="14sp"
         android:maxLines="1"
         android:layout_width="match_parent"
@@ -42,13 +53,13 @@
             android:src="@drawable/ic_launcher_background" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/usernameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
 
-            android:text="TextView" />
+            android:text="repoName" />
     </LinearLayout>
 
 
