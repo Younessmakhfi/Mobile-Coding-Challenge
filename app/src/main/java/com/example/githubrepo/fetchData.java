@@ -1,12 +1,11 @@
+/*
 package com.example.githubrepo;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.annotation.RequiresApi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,67 +14,63 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class fetchData extends AsyncTask<Void, Void, Void> {
     String data = "";
-    String [] idList = {"1","2","3"};
-    String [] titleList = {"1","2","3"};
-    String[] imageID = {"https://avatars0.githubusercontent.com/u/905434?v=4",
-            "https://avatars0.githubusercontent.com/u/905434?v=4",
-            "https://avatars0.githubusercontent.com/u/905434?v=4",
-    };
-    String allData = "";
-    private Context context;
-    ArrayList<String> items = new ArrayList<String>();
+    ArrayList<String> allrepos = new ArrayList<String>();
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected Void doInBackground(Void... voids) {
+        LocalDate now = LocalDate.now();
+        LocalDate last30Days = now.minusDays( 30 );
+        data = "";
         try {
-            URL url = new URL("https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc");
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = "";
-            while(line != null){
-                line = bufferedReader.readLine();
-                data = data + line;
-            }
-
-            try {
-                JSONArray js = new JSONArray(data);
-                JSONObject jo;
-                for ( int i = 0; i< js.length(); i++) {
-                    jo = js.getJSONObject(i);
-                    allData += jo.getString("id") + "\n";
+            if(MainActivity.repoCount == 0){
+                URL url = new URL("https://api.github.com/search/repositories?q=created:%3E"+ last30Days + "&sort=stars&order=desc");
+                Log.d("repoNumber",String.valueOf(MainActivity.repoCount));
+                MainActivity.repoCount ++;
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                while(line != null){
+                    line = bufferedReader.readLine();
+                    data = data + line;
                 }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                bufferedReader.close();
+            } else {
+                URL url = new URL("https://api.github.com/search/repositories?q=created:%3E"+ last30Days + "&sort=stars&order=desc&page=" + MainActivity.repoCount);
+                Log.d("repoNumber",String.valueOf(MainActivity.repoCount));
+                MainActivity.repoCount++;
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                while(line != null){
+                    line = bufferedReader.readLine();
+                    data = data + line;
+                }
+                bufferedReader.close();
             }
-//            JSONArray arr = new JSONArray(data);
-          /*  for(int i = 0; i < arr.length(); i++){
-                idList[i] = arr.getJSONObject(i).getString("id");
-                titleList[i] = arr.getJSONObject(i).getString("title");
-            } */
 
         }
-     catch (MalformedURLException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return null;
-}
+    }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         //MainActivity.dataTV.setText(data);
-        MainActivity.thisData = this.data;
-        Log.d("i'ts done","data come");
-       // Toast.makeText(context, "this is : " + data, Toast.LENGTH_SHORT).show();
-
+        //MainActivity.data = this.data;
+        MainActivity.data = this.data;
     }
 }
-
+*/

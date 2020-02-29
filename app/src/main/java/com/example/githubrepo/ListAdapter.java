@@ -1,6 +1,7 @@
 package com.example.githubrepo;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,28 +11,32 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.squareup.picasso.Picasso;
-
 
 public class ListAdapter extends BaseAdapter {
 
     Context context;
-    private final String [] values;
-    private final String [] numbers;
-    private final String [] images;
+    public static String [] repoName;
+    public static String [] repoDesri;
+    public static String [] stars;
+    public static String [] username;
+    public static String [] avatar;
 
-    public ListAdapter(Context context, String [] values, String [] numbers, String [] images){
+    public ListAdapter(Context context, String [] repoName, String [] repoDesri, String [] stars, String [] username, String [] avatar){
         //super(context, R.layout.single_list_app_item, utilsArrayList);
         this.context = context;
-        this.values = values;
-        this.numbers = numbers;
-        this.images = images;
+        this.repoName = repoName;
+        this.repoDesri = repoDesri;
+        this.stars = stars;
+        this.username = username;
+        this.avatar = avatar;
     }
 
     @Override
     public int getCount() {
-        return values.length;
+        return repoName.length;
     }
 
     @Override
@@ -44,6 +49,7 @@ public class ListAdapter extends BaseAdapter {
         return i;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -58,9 +64,11 @@ public class ListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.single_list_item, parent, false);
-            viewHolder.txtName = (TextView) convertView.findViewById(R.id.aNametxt);
-            viewHolder.txtVersion = (TextView) convertView.findViewById(R.id.aVersiontxt);
-            viewHolder.icon = (ImageView) convertView.findViewById(R.id.appIconIV);
+            viewHolder.repoName = (TextView) convertView.findViewById(R.id.repoNameTV);
+            viewHolder.repoDescri = (TextView) convertView.findViewById(R.id.repoDesTV);
+            viewHolder.stars = (TextView) convertView.findViewById(R.id.starsTV);
+            viewHolder.username = (TextView) convertView.findViewById(R.id.usernameTV);
+            viewHolder.avatar = (ImageView) convertView.findViewById(R.id.avatarIM);
 
             result=convertView;
 
@@ -70,18 +78,23 @@ public class ListAdapter extends BaseAdapter {
             result=convertView;
         }
 
-        viewHolder.txtName.setText(values[position]);
-        viewHolder.txtVersion.setText("Version: "+numbers[position]);
-        Picasso.get().load(images[position]).into(viewHolder.icon);
+        viewHolder.repoName.setText(repoName[position]);
+        viewHolder.repoDescri.setText(repoDesri[position]);
+        String starsS = MainActivity.getRoughNumber(Long.parseLong(stars[position]));
+        viewHolder.stars.setText(starsS);
+        viewHolder.username.setText(username[position]);
+        Picasso.get().load(avatar[position]).into(viewHolder.avatar);
 
         return convertView;
     }
 
     private static class ViewHolder {
 
-        TextView txtName;
-        TextView txtVersion;
-        ImageView icon;
+        TextView repoName;
+        TextView repoDescri;
+        TextView stars;
+        TextView username;
+        ImageView avatar;
 
     }
 
