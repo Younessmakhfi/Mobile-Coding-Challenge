@@ -42,11 +42,9 @@ public class MainActivity extends AppCompatActivity {
     ListView lView;
     ListAdapter lAdapter;
     RelativeLayout loaderView;
-    public static String data = null;
     int repoCount = 0;
     public static List<JSONObject> jsonobjectArray = new ArrayList<>();
     List<String> urls = new ArrayList<>();
-   // fetchData process = new fetchData();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +54,20 @@ public class MainActivity extends AppCompatActivity {
         View footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer, null, false);
         lView.addFooterView(footerView);
         loaderView = findViewById(R.id.loaderView);
+        //get All the Pages (Lase 30 days of course)
         storeUrls();
         MyAsyncTask myAsyncTask = new MyAsyncTask(MainActivity.this, urls);
         myAsyncTask.execute();
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.spin_kit);
         Sprite doubleBounce = new Circle();
         progressBar.setIndeterminateDrawable(doubleBounce);
+        //wait 10 s before show the data in list view
         new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }
             public void onFinish() {
+                //after 10 s show the data with ShowData Function
             showData(jsonobjectArray.get(repoCount));
             loaderView.setVisibility(View.GONE);
 
@@ -75,14 +76,15 @@ public class MainActivity extends AppCompatActivity {
         lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+// this is a list item click test ^_^
                 Toast.makeText(getBaseContext(), "My Toast Message", Toast.LENGTH_SHORT).show();
 
             }
         });
     }
-
+//this function can covert a big number like 1000 to 1k ^_^
     public static String getRoughNumber(long value) {
+        //check if the number is greater than 999 if not just return it ^_^
         if (value <= 999) {
             return String.valueOf(value);
         }
@@ -92,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
         return new DecimalFormat("#,##0.#").format(value / Math.pow(1000, digitGroups)) + "" + units[digitGroups];
 
     }
-    public void JsonDevider(JSONObject json) {
+    public void JsonDivider(JSONObject json) {
+        //this function is the heart <3 of this app i love this function ^_^
+        // so this function can take a json object and take the repo name
+        // description, username, avatar and store it into a string
         try {
             //JSONObject reader = new JSONObject(json);
             JSONArray items  = json.getJSONArray("items");
@@ -117,21 +122,28 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+//after 10 s of waiting we call this function to send the json object to JsonDivider function my Love ^_^
+// JsonDivider store all the info in strings as i mentioned before
     public void showData(JSONObject jsonObject) {
-        //JSONObject jsonObject = MyAsyncTask.jsonURls.get(0);
-        //JsonDevider(jsonobjectArray.get(0));
-        JsonDevider(jsonObject);
+        JsonDivider(jsonObject);
+        // in this step we convert this string to a list of items ^_^ with split function
         repoName = repoNameS.split("\n");
         repoDesri = repoDesriS.split("\n");
         stars = starsS.split("\n");
         username = usernameS.split("\n");
         avatar = avatarS.split("\n");
+        // here the show time the most important part for UI send all the Strings list to an adapter
+        // anfter that we set this adapter to our list view and the magic happen
         lAdapter = new ListAdapter(this, repoName, repoDesri, stars, username, avatar);
         lView.setAdapter(lAdapter);
     }
 
     public void showMore(View view) {
+        // after scrolling down(after 29 repos) the user can load more repos ^_^ (29 repo per page ^_^)
+        if (repoCount == jsonobjectArray.size() - 1){
+            Toast.makeText(this, "For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.", Toast.LENGTH_LONG).show();
+            return;
+        }
         repoCount++;
         loaderView.setVisibility(View.VISIBLE);
         lView.setVisibility(View.GONE);
@@ -141,8 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                Toast.makeText(MainActivity.this, "array size is" + jsonobjectArray.size(), Toast.LENGTH_SHORT).show();
-                JsonDevider(jsonobjectArray.get(repoCount));
+                JsonDivider(jsonobjectArray.get(repoCount));
                 repoName = repoNameS.split("\n");
                 repoDesri = repoDesriS.split("\n");
                 stars = starsS.split("\n");
@@ -160,35 +171,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }.start();
-
-/*        new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-
-                cancel();
-            }
-
-            public void onFinish() {
-
-
-            }
-        }.start();*/
-
-    }
+}
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void storeUrls(){
         //new MyAsyncTask(MainActivity.this, urls).execute();
         LocalDate now = LocalDate.now();
         LocalDate last30Days = now.minusDays( 30 );
-        for (int i = 1;i < 34; i++){
+        //For unauthenticated requests, the rate limit allows you to make up to 10 requests per minute.
+        for (int i = 1;i < 11; i++){
             urls.add("https://api.github.com/search/repositories?q=created:%3E"+ last30Days + "&sort=stars&order=desc&page=" + i);
         }
-
-
-
-/*        for(int i = 1; i <= 2; i++){
-            urls.add("https://api.github.com/search/repositories?q=created:%3E"+ last30Days + "&sort=stars&order=desc&page="+ i);
-        }*/
-
     }
 }

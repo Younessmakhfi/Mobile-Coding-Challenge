@@ -2,10 +2,8 @@ package com.example.githubrepo;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +15,6 @@ import java.util.List;
 public class MyAsyncTask extends AsyncTask<Void, Void, List<JSONObject>> {
     private Activity activity;
     private List<String> urls;
-    private int i = 0;
     public static List<JSONObject> jsonURls = new ArrayList<>();
     public MyAsyncTask(Activity activity, List<String> urls) {
         this.urls = urls;
@@ -45,10 +42,6 @@ public class MyAsyncTask extends AsyncTask<Void, Void, List<JSONObject>> {
                 JSONObject jsonResult = new JSONObject(sb.toString());
                 //jsonURls.add(jsonResult);
                 MainActivity.jsonobjectArray.add(jsonResult);
-                if(i < 10){
-
-                }
-
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -62,7 +55,6 @@ public class MyAsyncTask extends AsyncTask<Void, Void, List<JSONObject>> {
         }
         return jsonURls;
     }
-
     @Override
     protected void onPostExecute(List<JSONObject> jsonObjects) {
         super.onPostExecute(jsonObjects);
